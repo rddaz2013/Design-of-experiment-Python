@@ -233,21 +233,18 @@ def build_sukharev(factor_level_ranges,num_samples=None):
             factor_level_ranges[key][1]=factor_level_ranges[key][-1]
             factor_level_ranges[key]=factor_level_ranges[key][:2]
             print(f"{key} had more than two levels. Assigning the end point to the high level.")
-    
+
     factor_count=len(factor_level_ranges)
-    factor_lists=[]
-    
-    for key in factor_level_ranges:
-        factor_lists.append(factor_level_ranges[key])
-    
+    factor_lists = [factor_level_ranges[key] for key in factor_level_ranges]
+
     check=num_samples**((1/factor_count))
     if (check-int(check)>1e-5):
         num_samples=(int(check)+1)**(factor_count)
         print("\nNumber of samples not adequate to fill a Sukharev grid. Increasing sample size to: ",num_samples)
-    
+
     x = sukharev_grid(num_points=num_samples,dimension=factor_count)
     factor_lists=np.array(factor_lists)
-    
+
     df = construct_df_from_random_matrix(x,factor_lists)
     df.columns=factor_level_ranges.keys()
     return df
@@ -273,19 +270,16 @@ def build_box_behnken(factor_level_ranges,center=1):
             factor_level_ranges[key].append((factor_level_ranges[key][0]+factor_level_ranges[key][1])/2)
             factor_level_ranges[key].sort()
             print(f"{key} had only two end points. Creating a mid-point by averaging them")
-    
+
     factor_count=len(factor_level_ranges)
-    factor_lists=[]
-    
-    for key in factor_level_ranges:
-        factor_lists.append(factor_level_ranges[key])
-    
+    factor_lists = [factor_level_ranges[key] for key in factor_level_ranges]
+
     x = bbdesign_corrected(factor_count,center=center)
     x=x+1 #Adjusting the index up by 1
 
     df=construct_df(x,factor_lists)
     df.columns=factor_level_ranges.keys()
-    
+
     return df
 
 # =====================================================================================================
@@ -310,23 +304,20 @@ def build_central_composite(factor_level_ranges,center=(2,2),alpha='o',face='ccc
             factor_level_ranges[key][1]=factor_level_ranges[key][-1]
             factor_level_ranges[key]=factor_level_ranges[key][:2]
             print(f"{key} had more than two levels. Assigning the end point to the high level.")
-    
-    
+
+
     # Creates the mid-points by averaging the low and high levels
     for key in factor_level_ranges:
         if len(factor_level_ranges[key])==2:
             factor_level_ranges[key].append((factor_level_ranges[key][0]+factor_level_ranges[key][1])/2)
             factor_level_ranges[key].sort()
-    
+
     factor_count=len(factor_level_ranges)
-    factor_lists=[]
-    
-    for key in factor_level_ranges:
-        factor_lists.append(factor_level_ranges[key])
-    
+    factor_lists = [factor_level_ranges[key] for key in factor_level_ranges]
+
     x = ccdesign(factor_count,center=center,alpha=alpha,face=face)
     factor_lists=np.array(factor_lists)
-    
+
     df = construct_df_from_matrix(x,factor_lists)
     df.columns=factor_level_ranges.keys()
     return df
@@ -352,19 +343,16 @@ def build_lhs(factor_level_ranges, num_samples=None, prob_distribution=None):
             factor_level_ranges[key][1]=factor_level_ranges[key][-1]
             factor_level_ranges[key]=factor_level_ranges[key][:2]
             print(f"{key} had more than two levels. Assigning the end point to the high level.")
-    
+
     factor_count=len(factor_level_ranges)
-    factor_lists=[]
-    
-    if num_samples==None:
+    if num_samples is None:
         num_samples=factor_count
-    
-    for key in factor_level_ranges:
-        factor_lists.append(factor_level_ranges[key])
-    
+
+    factor_lists = [factor_level_ranges[key] for key in factor_level_ranges]
+
     x = lhs(n=factor_count,samples=num_samples)
     factor_lists=np.array(factor_lists)
-    
+
     df = construct_df_from_random_matrix(x,factor_lists)
     df.columns=factor_level_ranges.keys()
     return df
@@ -386,19 +374,16 @@ def build_space_filling_lhs(factor_level_ranges, num_samples=None):
             factor_level_ranges[key][1]=factor_level_ranges[key][-1]
             factor_level_ranges[key]=factor_level_ranges[key][:2]
             print(f"{key} had more than two levels. Assigning the end point to the high level.")
-    
+
     factor_count=len(factor_level_ranges)
-    factor_lists=[]
-    
-    if num_samples==None:
+    if num_samples is None:
         num_samples=factor_count
-    
-    for key in factor_level_ranges:
-        factor_lists.append(factor_level_ranges[key])
-    
+
+    factor_lists = [factor_level_ranges[key] for key in factor_level_ranges]
+
     x = transform_spread_out(lhd_matrix(num_points=num_samples,dimension=factor_count)) # create latin hypercube design
     factor_lists=np.array(factor_lists)
-     
+
     df = construct_df_from_random_matrix(x,factor_lists)
     df.columns=factor_level_ranges.keys()
     return df
@@ -420,19 +405,16 @@ def build_random_k_means(factor_level_ranges, num_samples=None):
             factor_level_ranges[key][1]=factor_level_ranges[key][-1]
             factor_level_ranges[key]=factor_level_ranges[key][:2]
             print(f"{key} had more than two levels. Assigning the end point to the high level.")
-    
+
     factor_count=len(factor_level_ranges)
-    factor_lists=[]
-    
-    if num_samples==None:
+    if num_samples is None:
         num_samples=factor_count
-    
-    for key in factor_level_ranges:
-        factor_lists.append(factor_level_ranges[key])
-    
+
+    factor_lists = [factor_level_ranges[key] for key in factor_level_ranges]
+
     x = random_k_means(num_points=num_samples,dimension=factor_count) # create latin hypercube design
     factor_lists=np.array(factor_lists)
-    
+
     df = construct_df_from_random_matrix(x,factor_lists)
     df.columns=factor_level_ranges.keys()
     return df
@@ -459,19 +441,16 @@ def build_maximin(factor_level_ranges, num_samples=None):
             factor_level_ranges[key][1]=factor_level_ranges[key][-1]
             factor_level_ranges[key]=factor_level_ranges[key][:2]
             print(f"{key} had more than two levels. Assigning the end point to the high level.")
-    
+
     factor_count=len(factor_level_ranges)
-    factor_lists=[]
-    
-    if num_samples==None:
+    if num_samples is None:
         num_samples=factor_count
-    
-    for key in factor_level_ranges:
-        factor_lists.append(factor_level_ranges[key])
-    
+
+    factor_lists = [factor_level_ranges[key] for key in factor_level_ranges]
+
     x = maximin_reconstruction(num_points=num_samples,dimension=factor_count) # create latin hypercube design
     factor_lists=np.array(factor_lists)
-      
+
     df = construct_df_from_random_matrix(x,factor_lists)
     df.columns=factor_level_ranges.keys()
     return df
@@ -495,19 +474,16 @@ def build_halton(factor_level_ranges, num_samples=None):
             factor_level_ranges[key][1]=factor_level_ranges[key][-1]
             factor_level_ranges[key]=factor_level_ranges[key][:2]
             print(f"{key} had more than two levels. Assigning the end point to the high level.")
-    
+
     factor_count=len(factor_level_ranges)
-    factor_lists=[]
-    
-    if num_samples==None:
+    if num_samples is None:
         num_samples=factor_count
-    
-    for key in factor_level_ranges:
-        factor_lists.append(factor_level_ranges[key])
-    
+
+    factor_lists = [factor_level_ranges[key] for key in factor_level_ranges]
+
     x = halton(num_points=num_samples,dimension=factor_count) # create Halton matrix design
     factor_lists=np.array(factor_lists)
-    
+
     df = construct_df_from_random_matrix(x,factor_lists)
     df.columns=factor_level_ranges.keys()
     return df
@@ -516,7 +492,7 @@ def build_halton(factor_level_ranges, num_samples=None):
 # Function for building uniform random design matrix from a dictionary of process variables
 # ==========================================================================================
 
-def build_uniform_random (factor_level_ranges, num_samples=None):
+def build_uniform_random(factor_level_ranges, num_samples=None):
     """
     Builds a design dataframe with samples drawn from uniform random distribution based on a dictionary of factor/level ranges.
     Only min and max values of the range are required.
@@ -529,19 +505,16 @@ def build_uniform_random (factor_level_ranges, num_samples=None):
             factor_level_ranges[key][1]=factor_level_ranges[key][-1]
             factor_level_ranges[key]=factor_level_ranges[key][:2]
             print(f"{key} had more than two levels. Assigning the end point to the high level.")
-    
+
     factor_count=len(factor_level_ranges)
-    factor_lists=[]
-    
-    if num_samples==None:
+    if num_samples is None:
         num_samples=factor_count
-    
-    for key in factor_level_ranges:
-        factor_lists.append(factor_level_ranges[key])
-    
+
+    factor_lists = [factor_level_ranges[key] for key in factor_level_ranges]
+
     x = random_uniform(num_points=num_samples,dimension=factor_count) # create Halton matrix design
     factor_lists=np.array(factor_lists)
-     
+
     df = construct_df_from_random_matrix(x,factor_lists)
     df.columns=factor_level_ranges.keys()
     return df

@@ -19,16 +19,16 @@ def user_input():
                 "13) Halton sequence based",
                 "14) Uniform random matrix"
                ]
-    
+
     for choice in list_doe:
         print(choice)
     print("-"*60)
-    
+
     doe_choice = int(input("Please make a choice for your Deisgn-of-Experiment build: "))
     infile = str(input("Please enter the name of the input csv file (enter only the name without the CSV extension): "))
     print()
-    
+
     if (infile[-3:]!='csv'):
-        infile=infile+'.csv'
-      
+        infile += '.csv'
+
     return (doe_choice,infile)

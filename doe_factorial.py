@@ -236,8 +236,4 @@ def _grep(haystack, needle):
     except (TypeError, AttributeError):
         return [0] if needle in haystack else []
     else:
-        locs = []
-        for idx, item in enumerate(haystack):
-            if needle in item:
-                locs += [idx]
-        return locs
+        return [idx for idx, item in enumerate(haystack) if needle in item]

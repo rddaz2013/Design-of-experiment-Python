@@ -236,11 +236,7 @@ def _grep(haystack, needle):
     except (TypeError, AttributeError):
         return [0] if needle in haystack else []
     else:
-        locs = []
-        for idx, item in enumerate(haystack):
-            if needle in item:
-                locs += [idx]
-        return locs
+        return [idx for idx, item in enumerate(haystack) if needle in item]
 
 
 #__all__ = ['bbdesign_corrected']
@@ -287,21 +283,21 @@ def bbdesign_corrected(n, center=None):
         
     """
     assert n>=3, 'Number of variables must be at least 3'
-    
+
     # First, compute a factorial DOE with 2 parameters
     H_fact = ff2n(2)
     # Now we populate the real DOE with this DOE
-    
+
     # We made a factorial design on each pair of dimensions
     # - So, we created a factorial design with two factors
     # - Make two loops
     Index = 0
     nb_lines = int((0.5*n*(n-1))*H_fact.shape[0])
     H = repeat_center(n, nb_lines)
-    
+
     for i in range(n - 1):
         for j in range(i + 1, n):
-            Index = Index + 1
+            Index += 1
             H[max([0, (Index - 1)*H_fact.shape[0]]):Index*H_fact.shape[0], i] = H_fact[:, 0]
             H[max([0, (Index - 1)*H_fact.shape[0]]):Index*H_fact.shape[0], j] = H_fact[:, 1]
 
@@ -311,9 +307,9 @@ def bbdesign_corrected(n, center=None):
             center = points[n]
         else:
             center = n
-        
+
     H = np.c_[H.T, repeat_center(n, center).T].T
-    
+
     return H
 
 def repeat_center(n, repeat):
